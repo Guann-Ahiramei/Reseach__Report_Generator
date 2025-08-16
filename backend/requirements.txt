@@ -1,0 +1,61 @@
+# FastAPI and server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# WebSocket support
+websockets==12.0
+
+# Redis
+redis==5.0.1
+hiredis==2.2.3
+
+# FAISS for vector search
+faiss-cpu==1.7.4
+
+# LangChain and LCEL
+langchain==0.1.0
+langchain-core==0.1.0
+langchain-openai==0.0.2
+langchain-community==0.0.10
+
+# OpenAI
+openai==1.6.1
+
+# Document processing
+pypdf==3.17.4
+PyPDF2==3.0.1
+python-docx==1.1.0
+openpyxl==3.1.2
+python-pptx==0.6.23
+chardet==5.2.0
+
+# Web scraping and HTTP
+requests==2.31.0
+aiohttp==3.9.1
+beautifulsoup4==4.12.2
+
+# Data processing
+pandas==2.1.4
+numpy==1.24.4
+
+# Environment and configuration
+python-dotenv==1.0.0
+pydantic==2.5.2
+pydantic-settings==2.1.0
+
+# Logging and monitoring
+structlog==23.2.0
+
+# Async utilities
+asyncio-throttle==1.0.2
+
+# File handling
+python-multipart==0.0.6
+
+# Tavily search (placeholder - adjust if actual package exists)
+tavily-python==0.3.0
+
+# Development and testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+httpx==0.25.2

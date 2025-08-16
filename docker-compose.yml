@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # Redis cache service
+  redis:
+    image: redis:7-alpine
+    container_name: industry_reporter_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend FastAPI service
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: industry_reporter_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - FAISS_INDEX_PATH=/app/data/faiss_index
+      - DOC_PATH=/app/data/documents
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+      - ./backend:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  # Frontend React service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: industry_reporter_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_WS_URL=ws://localhost:8000
+
+  # Optional: FAISS index initialization service
+  faiss-init:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: industry_reporter_faiss_init
+    volumes:
+      - ./data:/app/data
+      - ./backend:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - FAISS_INDEX_PATH=/app/data/faiss_index
+      - DOC_PATH=/app/data/documents
+    command: ["python", "scripts/init_faiss_index.py"]
+    profiles:
+      - init
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  default:
+    name: industry_reporter_network

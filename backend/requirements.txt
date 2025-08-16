@@ -14,8 +14,8 @@ faiss-cpu==1.7.4
 
 # LangChain and LCEL
 langchain==0.1.0
-langchain-core==0.1.0
-langchain-openai==0.0.2
+# langchain-core==0.1.0
+# langchain-openai==0.0.2
 langchain-community==0.0.10
 
 # OpenAI
@@ -53,7 +53,7 @@ asyncio-throttle==1.0.2
 python-multipart==0.0.6
 
 # Tavily search (placeholder - adjust if actual package exists)
-tavily-python==0.3.0
+tavily-python==-0.7.10
 
 # Development and testing
 pytest==7.4.3
